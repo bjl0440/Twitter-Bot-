@@ -1,5 +1,6 @@
 import tweepy, configparser, pandas as pd, os
 
+TWEET_SAMPLE_SIZE = 20
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
     for trend in trends[0]['trends']:
@@ -12,7 +13,7 @@ def compile_trends(trends, trend_data):
 # compiles tweets about a trend
 def compile_tweets(trend, tweet_data):
     tweets = tweepy.Cursor(api.search_tweets, q = trend[1] + '-filter:retweets -filter:replies',lang = 'en' 
-    ,count = 200, tweet_mode = 'extended').items(200)
+    ,count = TWEET_SAMPLE_SIZE, tweet_mode = 'extended').items(TWEET_SAMPLE_SIZE)
 
     for tweet in tweets:
         tweet_data.append((tweet.created_at,tweet.user.screen_name, tweet.full_text))
@@ -45,17 +46,23 @@ tweet_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[1:2]
+trend_data = trend_data[0:10]
 
 # converts trend_data into csv file
 os.remove('csv/trending_topics.csv') #removes old trending csv file
 trend_dataframe = pd.DataFrame(trend_data, columns=trends_column)
 trend_dataframe.to_csv('csv/trending_topics.csv')
 
+
+if os.path.exists('csv/tweets.csv'):
+    os.remove('csv/tweets.csv') #removes old tweets csv file
+
+
 # compiles tweets into csv file
-os.remove('csv/tweets.csv') #removes old tweets csv file
+end = TWEET_SAMPLE_SIZE + 1
 for trend in trend_data:
     compile_tweets(trend,tweet_data)
-    tweet_dataframe = pd.DataFrame(tweet_data, columns = tweet_column)
+    tweet_dataframe = pd.DataFrame(tweet_data,index=range(1,end) ,columns = tweet_column)
+    end += TWEET_SAMPLE_SIZE
 
 tweet_dataframe.to_csv('csv/tweets.csv')
