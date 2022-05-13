@@ -1,7 +1,5 @@
-import tweepy
-import configparser
-import pandas as p
-import os
+import tweepy, configparser, pandas as pd, os
+
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
     for trend in trends[0]['trends']:
@@ -21,7 +19,7 @@ def compile_tweets(trend, tweet_data):
     
 # read Configs from ini file
 config = configparser.ConfigParser()
-config.read('config.ini')
+config.read('api/config.ini')
 
 api_key = config['twitter']['api_key']
 api_key_secret = config['twitter']['api_key_secret']
@@ -47,16 +45,17 @@ tweet_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[0:2]
+trend_data = trend_data[1:2]
 
 # converts trend_data into csv file
-trend_dataframe = p.DataFrame(trend_data, columns=trends_column)
-trend_dataframe.to_csv('trending_topics.csv')
+os.remove('csv/trending_topics.csv') #removes old trending csv file
+trend_dataframe = pd.DataFrame(trend_data, columns=trends_column)
+trend_dataframe.to_csv('csv/trending_topics.csv')
 
 # compiles tweets into csv file
-os.remove('tweets.csv') #removes old csv file
+os.remove('csv/tweets.csv') #removes old tweets csv file
 for trend in trend_data:
     compile_tweets(trend,tweet_data)
-    tweet_dataframe = p.DataFrame(tweet_data, columns = tweet_column)
+    tweet_dataframe = pd.DataFrame(tweet_data, columns = tweet_column)
 
-tweet_dataframe.to_csv('tweets.csv')
+tweet_dataframe.to_csv('csv/tweets.csv')
