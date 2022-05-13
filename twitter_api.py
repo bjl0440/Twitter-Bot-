@@ -14,11 +14,10 @@ def compile_trends(trends, trend_data):
 # compiles tweets about a trend
 def compile_tweets(trend, tweet_data):
     tweets = tweepy.Cursor(api.search_tweets, q = trend[1],lang = 'en' ,  count = 200, tweet_mode = 'extended').items(200)
-    tweet_data.append((trend))
+
     for tweet in tweets:
         tweet_data.append((tweet.user.screen_name, tweet.full_text))
     
-
 # read Configs from ini file
 config = configparser.ConfigParser()
 config.read('config.ini')
@@ -46,20 +45,12 @@ tweet_column = ['User','Tweet']
 tweet_data = []
 compile_trends(trends,trend_data)
 
-
-
-#print(trends)
-#print(compile_trends(trends,trend_data))
+# top 10 tweeted trending
+trend_data = trend_data[0:2]
 
 # converts trend_data into csv file
-# top 10 tweeted trending
-trend_data = trend_data[0:1]
-print(trend_data)
-
-
-#trend_dataframe = p.DataFrame(trend_data, columns=trends_column)
-#trend_dataframe.to_csv('trending_topics.csv')
-
+trend_dataframe = p.DataFrame(trend_data, columns=trends_column)
+trend_dataframe.to_csv('trending_topics.csv')
 
 for trend in trend_data:
     compile_tweets(trend,tweet_data)
