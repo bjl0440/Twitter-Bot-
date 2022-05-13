@@ -1,6 +1,7 @@
 import tweepy, configparser, pandas as pd, os
 
 TWEET_SAMPLE_SIZE = 20
+
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
     for trend in trends[0]['trends']:
@@ -54,7 +55,6 @@ trend_dataframe.to_csv('csv/trending_topics.csv')
 
 if os.path.exists('csv/tweets.csv'):
     os.remove('csv/tweets.csv') #removes old tweets csv file
-
 
 # compiles tweets into csv file
 end = TWEET_SAMPLE_SIZE + 1
