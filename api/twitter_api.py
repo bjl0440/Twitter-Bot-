@@ -35,9 +35,6 @@ api = tweepy.API(auth)
 # trends based on location
 trends = api.get_place_trends(id = 23424775)
 
-# tweets
-
-
 # trend_dataframe lists
 trends_column = ['tweet_volume','Topic','URL']
 trend_data = []
@@ -49,7 +46,8 @@ compile_trends(trends,trend_data)
 trend_data = trend_data[0:10]
 
 # converts trend_data into csv file
-os.remove('csv/trending_topics.csv') #removes old trending csv file
+if os.path.exists('csv/trending_topics.csv'):
+    os.remove('csv/trending_topics.csv') #removes old trending csv file
 trend_dataframe = pd.DataFrame(trend_data, columns=trends_column)
 trend_dataframe.to_csv('csv/trending_topics.csv')
 
