@@ -21,7 +21,7 @@ def compile_tweets(trend, tweet_data):
     
 # read Configs from ini file
 config = configparser.ConfigParser()
-config.read('config.ini.gitignore')
+config.read('config.ini')
 
 api_key = config['twitter']['api_key']
 api_key_secret = config['twitter']['api_key_secret']
