@@ -44,7 +44,7 @@ tweet_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[0:10]
+trend_data = trend_data[0:1]
 
 # converts trend_data into csv file
 if os.path.exists('csv/trending_topics.csv'):
