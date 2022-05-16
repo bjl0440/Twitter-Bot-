@@ -1,23 +1,23 @@
 import pandas as pd
-from transformers import AutoTokenizer, AutoModelForSequenceClassification
+from transformers import AutoTokenizer, AutoModelForSequenceClassification, AutoConfig
 
-
+# formats tweet for analysis
+def format_tweet(tweet):
+    text = []
+    for word in tweet.split(' '):
+        if word.startswith('@') and len(word) > 1:
+            word = "@user"
+        if word.startswith('http') and len(word) > 1:
+            word = 'http'
+        text.append(word)
+    return ' '.join(text)
 
 #df = open("csv/tweets.csv", "r")
 tweets_df = pd.read_csv('csv/tweets.csv',index_col=0)
 tweets_df = tweets_df.reset_index()
 
-tweet_number = 0
-
-# print(tweets_df)
 MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(MODEL)
 
 for tweet in tweets_df.loc[:,'Tweet']:
-    for word in tweet.split(' '):
-        if word.startswith('@') and word.len() > 1:
-            word = "@user"
-        if word.startswith('https:'):
-            word = 'https://'
-        if word.startswith('#'):
-            word = '#Hashtag'
+    print(format_tweet(tweet))
