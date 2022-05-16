@@ -25,6 +25,15 @@ def format_data(datapoint):
     result.append('Positive: ' + str(round(datapoint[2]*100, 1)) + '%')
     return result
 
+def result(data):
+
+    if data[0] > 0.70:
+        return 'Negative'
+    elif data[1] > 0.70:
+        return 'Negative'
+    elif data[2] > 0.70:    
+        return 'Negative'
+
 df = open("csv/tweets.csv", "r")
 tweets_df = pd.read_csv('csv/tweets.csv',index_col=0)
 tweets_df = tweets_df.reset_index()
@@ -33,10 +42,12 @@ tweets_df = tweets_df.reset_index()
 # out = tokenizer(test, return_tensors='pt')
 # print(out)
 # print(tokenizer.convert_ids_to_tokens([0, 40018, 868, 2]))
-
+x = 0
 for tweet in tweets_df.loc[:,'Tweet']:
+    x +=1
     input = tokenizer(format_tweet(tweet), return_tensors='pt')
     output = model(**input)
     sm = output[0][0].detach().numpy()
     score = softmax(sm).tolist()
+    print(x)
     print(format_data(score))
