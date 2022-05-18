@@ -3,7 +3,6 @@ from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassifi
 import numpy
 from scipy.special import softmax
 
-from twitter_api import tss
 
 # roBERTa Model tokenizer and config
 BASE_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -30,14 +29,20 @@ def format_data(datapoint):
     result.append('Positive: ' + str(round(datapoint[2]*100, 1)) + '%')
     return result
 
+def percentage(sum, total):
+    return 100 * float(sum)/float(total)
+
 # Returns result for data
-def result(data):
+def result(data, results):
     if data[0] > 0.60:
-        return 'Negative'
+        results[0] += 1
+        #return 'Negative'
     elif data[1] > 0.60:
-        return 'Neutral'
-    elif data[2] > 0.60:    
-        return 'Positive'
+        results[1] += 1
+        #return 'Neutral'
+    elif data[2] > 0.60: 
+        results[2] += 1   
+        #return 'Positive'
     else:
         return 'Not Conclusive'
 
@@ -47,6 +52,7 @@ tweets_df = pd.read_csv('csv/tweets.csv',index_col=0)
 tweets_df = tweets_df.reset_index()
 
 x = 0
+results = [0,0,0]
 for tweet in tweets_df.loc[:,'Tweet']:
     x+=1
     input = tokenizer(format_tweet(tweet), return_tensors='pt')
@@ -58,4 +64,3 @@ for tweet in tweets_df.loc[:,'Tweet']:
     print(x)
     print(format_data(score))
     print(result(score))
-print(tss())
