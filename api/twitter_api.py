@@ -1,7 +1,6 @@
 import tweepy, configparser, pandas as pd, os
 import config
 
-global TWEET_SAMPLE_SIZE
 TWEET_SAMPLE_SIZE = 50
 
 # compile_trendss trend_data about trending topics into list 
@@ -38,6 +37,7 @@ api = tweepy.API(auth)
 # trends based on location
 trends = api.get_place_trends(id = 23424775)
 
+
 # trend_dataframe lists
 trends_column = ['tweet_volume','Topic','URL']
 trend_data = []
@@ -46,7 +46,7 @@ tweet_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[0:5]
+trend_data = trend_data[0:1]
 
 # converts trend_data into csv file
 if os.path.exists('csv/trending_topics.csv'):

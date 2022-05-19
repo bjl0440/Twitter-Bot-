@@ -3,6 +3,7 @@ from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassifi
 import numpy
 from scipy.special import softmax
 
+from twitter_api import TWEET_SAMPLE_SIZE, trend_data
 
 # roBERTa Model tokenizer and config
 BASE_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -53,14 +54,27 @@ tweets_df = tweets_df.reset_index()
 
 x = 0
 results = [0,0,0]
+tweet_num = 0
+trend_num = 0
 for tweet in tweets_df.loc[:,'Tweet']:
-    x+=1
     input = tokenizer(format_tweet(tweet), return_tensors='pt')
     output = model(**input)
     sm = output[0][0].detach().numpy()
     score = softmax(sm).tolist()
+    result(score, results)
+    tweet_num += 1
+
+    if tweet_num == TWEET_SAMPLE_SIZE:
+        print('Trend:' + str(trend_data[trend_num]) + str(percentage(max(results), TWEET_SAMPLE_SIZE)))
+    trend_num = 0
+    trend_num = 0
+
+
+    
+
 
     #testing
-    print(x)
-    print(format_data(score))
-    print(result(score))
+    # print(x)
+    # print(format_data(score))
+         # print(result(score))
+# print(TWEET_SAMPLE_SIZE)
