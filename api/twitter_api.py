@@ -1,7 +1,7 @@
 import tweepy, configparser, pandas as pd, os
 import config
 
-TWEET_SAMPLE_SIZE = 200
+TWEET_SAMPLE_SIZE = 20
 
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
@@ -19,7 +19,8 @@ def compile_tweets(trend, tweet_data):
 
     for tweet in tweets:
         tweet_data.append((tweet.created_at,tweet.user.screen_name, tweet.full_text))
-    
+
+# compiles news articles
 # read Configs from ini file
 config = configparser.ConfigParser()
 config.read('api/config.ini')
@@ -34,9 +35,10 @@ access_token_secret = config['twitter']['access_token_secret']
 auth = tweepy.OAuth1UserHandler(api_key, api_key_secret, access_token, access_token_secret)
 api = tweepy.API(auth)
 
+#==============================================================================================================
+
 # trends based on location
 trends = api.get_place_trends(id = 23424775)
-
 
 # trend_dataframe lists
 trends_column = ['tweet_volume','Topic','URL']
@@ -46,7 +48,7 @@ tweet_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[0:3]
+trend_data = trend_data[0:2]
 
 # converts trend_data into csv file
 if os.path.exists('csv/trending_topics.csv'):
@@ -66,3 +68,9 @@ for trend in trend_data:
     end += TWEET_SAMPLE_SIZE
 
 tweet_dataframe.to_csv('csv/tweets.csv')
+
+#============================================================================
+for trend in trend_data:
+    tweepy.Cursor(api.search_tweets, q = trend_data[trend_num][1] + '-filter:retweets -filter:replies',lang = 'en' 
+    ,count = TWEET_SAMPLE_SIZE, tweet_mode = 'extended').items(TWEET_SAMPLE_SIZE)
+    trend_data[trend_num][1]
