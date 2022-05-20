@@ -3,7 +3,7 @@ from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassifi
 import numpy
 from scipy.special import softmax
 
-from twitter_api import TWEET_SAMPLE_SIZE, trend_data
+from api.twitter_api import TWEET_SAMPLE_SIZE, trend_data, api
 
 # roBERTa Model tokenizer and config
 BASE_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
@@ -33,6 +33,12 @@ def format_data(datapoint):
 def percentage(sum, total):
     return 100 * float(sum)/float(total)
 
+def per(total):
+    return (str(percentage(total[0],TWEET_SAMPLE_SIZE)) + '% NEGATIVE  ' 
+    + str(percentage(total[1],TWEET_SAMPLE_SIZE)) + '% NEUTRAL  '
+    + str(percentage(total[2],TWEET_SAMPLE_SIZE)) + '% POSITIVE')
+
+
 # Returns result for data
 def result(data, results):
     if data[0] > 0.60:
@@ -61,14 +67,16 @@ for tweet in tweets_df.loc[:,'Tweet']:
     output = model(**input)
     sm = output[0][0].detach().numpy()
     score = softmax(sm).tolist()
+
     result(score, results)
     tweet_num += 1
-
-    if tweet_num == TWEET_SAMPLE_SIZE:
-        print('Trend:' + str(trend_data[trend_num]) + str(percentage(max(results), TWEET_SAMPLE_SIZE)))
-    trend_num = 0
-    trend_num = 0
-
+    
+    if tweet_num % TWEET_SAMPLE_SIZE == 0:
+        api.update_status('Trend:' + str(trend_data[trend_num][1]) + '   ' 
+        + per(results) + '    SAMPLE SIZE: ' + str(TWEET_SAMPLE_SIZE))
+        
+        trend_num +=1
+        results = [0,0,0]
 
     
 
