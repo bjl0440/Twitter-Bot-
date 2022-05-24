@@ -1,7 +1,7 @@
 import tweepy, configparser, pandas as pd, os
 import config
 
-TWEET_SAMPLE_SIZE = 20
+TWEET_SAMPLE_SIZE = 1000
 
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
@@ -70,7 +70,7 @@ for trend in trend_data:
 tweet_dataframe.to_csv('csv/tweets.csv')
 
 #============================================================================
-for trend in trend_data:
-    tweepy.Cursor(api.search_tweets, q = trend_data[trend_num][1] + '-filter:retweets -filter:replies',lang = 'en' 
-    ,count = TWEET_SAMPLE_SIZE, tweet_mode = 'extended').items(TWEET_SAMPLE_SIZE)
-    trend_data[trend_num][1]
+# for trend in trend_data:
+#     tweepy.Cursor(api.search_tweets, q = trend_data[trend_num][1] + '-filter:retweets -filter:replies',lang = 'en' 
+#     ,count = TWEET_SAMPLE_SIZE, tweet_mode = 'extended').items(TWEET_SAMPLE_SIZE)
+#     trend_data[trend_num][1]
