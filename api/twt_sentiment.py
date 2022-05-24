@@ -1,10 +1,13 @@
 import pandas as pd
+from pyparsing import PrecededBy
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification
 import numpy
 from scipy.special import softmax
 import matplotlib.pyplot as plt
 from twitter_api import *
-
+import glob
+import pathlib
+from datetime import date
 # roBERTa Model tokenizer and config
 BASE_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
@@ -59,6 +62,13 @@ df = open("csv/tweets.csv", "r")
 tweets_df = pd.read_csv('csv/tweets.csv',index_col=0)
 tweets_df = tweets_df.reset_index()
 
+# delete all previous graphs
+path = r'C:\Users\bjl04\Desktop\Twitter Bot\graphs\\'
+for file_name in os.listdir(path):
+    file = path + file_name
+    if os.path.isfile(file):
+        os.remove(file)
+
 results = [0,0,0]
 tweet_num = 0
 trend_num = 0
@@ -75,21 +85,23 @@ for tweet in tweets_df.loc[:,'Tweet']:
     tweet_num += 1
     
     if tweet_num % TWEET_SAMPLE_SIZE == 0:
-        tweet = api.update_status('Trend: ' + str(trend_data[trend_num][1]) + '   ' # Live tweeting format
-        + per(results) + '    SAMPLE SIZE: ' + str(TWEET_SAMPLE_SIZE))
 
-        id = tweet.id_str
+
+        # id = tweet.id_str
 
         
-        results = [0,0,0]
+        
 
 
-
-
-        presentage_results = [percentage(results[0],TWEET_SAMPLE_SIZE),percentage(results[0],TWEET_SAMPLE_SIZE)]
+        left = 100-percentage(results[0],TWEET_SAMPLE_SIZE)-percentage(results[1],TWEET_SAMPLE_SIZE)-percentage(results[2],TWEET_SAMPLE_SIZE)
+        
+        presentage_results = [percentage(results[0],TWEET_SAMPLE_SIZE),
+        percentage(results[1],TWEET_SAMPLE_SIZE),
+        percentage(results[2],TWEET_SAMPLE_SIZE),
+        left]
 
         labels = 'Negative', 'Neutral', 'Positive', 'Unclear'
-        sizes = [15, 30, 45, 10]
+        sizes = presentage_results
         explode = (0.1, 0.1, 0.1, 0.1)  
 
         fig1, ax1 = plt.subplots()
@@ -100,6 +112,15 @@ for tweet in tweets_df.loc[:,'Tweet']:
         plt.savefig('graphs/' + str(trend_data[trend_num][1]) + 'data')
 
 
+        # Trend Tweet
 
+        text = 'Trend: ' + str(trend_data[trend_num][1]) + '\n' + per(results) +  '\n' + 'SAMPLE SIZE: ' + str(TWEET_SAMPLE_SIZE)
+
+        api.update_status_with_media(status = text, 
+        filename = r'C:\Users\bjl04\Desktop\Twitter Bot\graphs\\' + str(trend_data[trend_num][1]) + 'data.png')
+
+
+
+        results = [0,0,0]
         trend_num +=1   
 
