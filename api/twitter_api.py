@@ -1,7 +1,7 @@
 import tweepy, configparser, pandas as pd, os
 import config
 
-TWEET_SAMPLE_SIZE = 1000
+TWEET_SAMPLE_SIZE = 2000
 
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
@@ -43,31 +43,37 @@ trends = api.get_place_trends(id = 23424775)
 # trend_dataframe lists
 trends_column = ['tweet_volume','Topic','URL']
 trend_data = []
-tweet_column = ['Time_tweeted','User','Tweet']
-tweet_data = []
+
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[0:2]
+trend_data = trend_data[2:5]
 
-# converts trend_data into csv file
-if os.path.exists('csv/trending_topics.csv'):
-    os.remove('csv/trending_topics.csv') #removes old trending csv file
+# Removes previous csv files
+path = r'C:\Users\bjl04\Desktop\Twitter Bot\csv\\'
+for file_name in os.listdir(path):
+    file = path + file_name
+    if os.path.isfile(file):
+        os.remove(file)
+
 trend_dataframe = pd.DataFrame(trend_data, columns=trends_column)
 trend_dataframe.to_csv('csv/trending_topics.csv')
 
-
-if os.path.exists('csv/tweets.csv'):
-    os.remove('csv/tweets.csv') #removes old tweets csv file
-
 # compiles tweets into csv file
+start = 1
 end = TWEET_SAMPLE_SIZE + 1
-for trend in trend_data:
-    compile_tweets(trend,tweet_data)
-    tweet_dataframe = pd.DataFrame(tweet_data,index=range(1,end) ,columns = tweet_column)
-    end += TWEET_SAMPLE_SIZE
+trend_index = 0
 
-tweet_dataframe.to_csv('csv/tweets.csv')
+tweet_column = ['Time_tweeted','User','Tweet']
+for trend in trend_data:
+    tweet_data = []
+    print(trend)
+    compile_tweets(trend,tweet_data)
+    tweet_dataframe = pd.DataFrame(tweet_data,index=range(start,end) ,columns = tweet_column)
+    end += TWEET_SAMPLE_SIZE
+    start += TWEET_SAMPLE_SIZE
+    tweet_dataframe.to_csv('csv/' + str(trend_data[trend_index][1]) + '_tweets.csv')
+    trend_index += 1
 
 #============================================================================
 # for trend in trend_data:
