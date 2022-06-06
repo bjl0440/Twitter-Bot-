@@ -132,8 +132,6 @@ for trend in trend_data:
             api.update_status_with_media(status = text, 
             filename = r'C:\Users\bjl04\Desktop\Twitter Bot\graphs\\' + str(trend_data[trend_num][1]) + 'data.png')
 
-
-
             results = [0,0,0]
             trend_num +=1   
 
