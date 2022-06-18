@@ -1,12 +1,8 @@
-import pandas as pd
+import pandas as pd, numpy, glob, pathlib, matplotlib.pyplot as plt
 from pyparsing import PrecededBy
 from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification
-import numpy
 from scipy.special import softmax
-import matplotlib.pyplot as plt
 from twitter_api import *
-import glob
-import pathlib
 from datetime import date
 
 # Initialize roBERTa Model tokenizer and config
@@ -43,19 +39,15 @@ def per(tallied_total):
     + str(percentage(tallied_total[1],TWEET_SAMPLE_SIZE)) + '% NEUTRAL  '
     + str(percentage(tallied_total[2],TWEET_SAMPLE_SIZE)) + '% POSITIVE')
 
-
 # Returns result for data
 def result(data, results):
-    threshold = 0.60
+    threshold = 0.50
     if data[0] > threshold:
-        results[0] += 1
-        #return 'Negative'
+        results[0] += 1 #Negative
     elif data[1] > threshold:
-        results[1] += 1
-        #return 'Neutral'
+        results[1] += 1 #Neutral
     elif data[2] > threshold: 
-        results[2] += 1   
-        #return 'Positive'
+        results[2] += 1 #Positive
     else:
         return 'Not Conclusive'
 
@@ -91,10 +83,6 @@ for trend in trend_data:
         tweet_num += 1 # number of tweets processed
         
         if tweet_num % TWEET_SAMPLE_SIZE == 0:
-
-
-            # id = tweet.id_str
-
 
             # percentage of non conclusive tweets
             not_conclusive = (100-

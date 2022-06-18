@@ -1,7 +1,9 @@
 import tweepy, configparser, pandas as pd, os
 import config
 
-TWEET_SAMPLE_SIZE = 2000
+TRENDS = 5
+TWEET_SAMPLE_SIZE = 20
+
 
 # compile_trendss trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
@@ -33,11 +35,11 @@ access_token_secret = config['twitter']['access_token_secret']
 
 # tweepy authentication
 auth = tweepy.OAuth1UserHandler(api_key, api_key_secret, access_token, access_token_secret)
-api = tweepy.API(auth)
+api = tweepy.API(auth, wait_on_rate_limit=True)
 
 #==============================================================================================================
 
-# trends based on location
+# trends based on location - Canada
 trends = api.get_place_trends(id = 23424775)
 
 # trend_dataframe lists
@@ -47,7 +49,7 @@ trend_data = []
 compile_trends(trends,trend_data)
 
 # top 10 tweeted trending
-trend_data = trend_data[2:5]
+trend_data = trend_data[0:TRENDS]
 
 # Removes previous csv files
 path = r'C:\Users\bjl04\Desktop\Twitter Bot\csv\\'
