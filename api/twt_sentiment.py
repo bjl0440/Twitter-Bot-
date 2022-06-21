@@ -1,14 +1,16 @@
-import pandas as pd, numpy, glob, pathlib, matplotlib.pyplot as plt
-from pyparsing import PrecededBy
-from transformers import AutoTokenizer, AutoConfig, AutoModelForSequenceClassification
-from scipy.special import softmax
-from twitter_api import *
 from datetime import date
+import os
+import matplotlib.pyplot as plt
+import pandas as pd
+from scipy.special import softmax
+from transformers import (AutoConfig, AutoModelForSequenceClassification,
+                          AutoTokenizer)
+
+from twitter_api import trend_data,TWEET_SAMPLE_SIZE,api
 
 # Initialize roBERTa Model tokenizer and config
 BASE_MODEL = "cardiffnlp/twitter-roberta-base-sentiment-latest"
 tokenizer = AutoTokenizer.from_pretrained(BASE_MODEL)
-config = AutoConfig.from_pretrained(BASE_MODEL)
 model = AutoModelForSequenceClassification.from_pretrained(BASE_MODEL)
 
 # formats tweet for analysis
@@ -77,7 +79,9 @@ for trend in trend_data:
         output = model(**input)
         sm = output[0][0].detach().numpy()
         score = softmax(sm).tolist()
-
+        # print(input)
+        # print(output)
+        # print(sm)
         result(score, results) # converts output into result
 
         tweet_num += 1 # number of tweets processed
@@ -123,3 +127,28 @@ for trend in trend_data:
             results = [0,0,0]
             trend_num +=1   
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#config = AutoConfig.from_pretrained(BASE_MODEL)
