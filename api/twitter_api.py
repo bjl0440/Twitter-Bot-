@@ -8,7 +8,6 @@ import tweepy
 TRENDS = 2
 TWEET_SAMPLE_SIZE = 20
 
-
 # compiles trends trend_data about trending topics into list 
 def compile_trends(trends, trend_data):
     for trend in trends[0]['trends']:
