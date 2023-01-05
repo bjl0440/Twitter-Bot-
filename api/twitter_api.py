@@ -1,7 +1,11 @@
-import tweepy, configparser, pandas as pd, os
+import configparser
+import os
+
+import pandas as pd
+import tweepy
 
 # Global vars
-TRENDS = 3
+TRENDS = 2
 TWEET_SAMPLE_SIZE = 20
 
 

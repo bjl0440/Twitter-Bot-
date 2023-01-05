@@ -79,9 +79,9 @@ for trend in trend_data:
         output = model(**input)
         sm = output[0][0].detach().numpy()
         score = softmax(sm).tolist()
-        # print(input)
-        # print(output)
-        # print(sm)
+        print(input)
+        print(output)
+        print(sm)
         result(score, results) # converts output into result
 
         tweet_num += 1 # number of tweets processed
