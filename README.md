@@ -1,1 +1,1 @@
-WIP Sentiment Analysis Twitter bot for trending topics
+Sentiment Analysis Twitter bot for trending topics
